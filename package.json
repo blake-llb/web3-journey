@@ -1,12 +1,10 @@
 {
-  "name": "web3-blake-journey",
-  "version": "1.0.0",
-  "description": "web3 journey",
   "scripts": {
-    "dev": "vite"
+    "dev": "vite",
+    "build": "vite build"
   },
   "dependencies": {
-    "@tanstack/vue-query": "^5.92.9",
+    "use-wagmi": "^1.5.0",
     "viem": "^2.46.3",
     "vue": "^3.5.29"
   },

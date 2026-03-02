@@ -1,42 +1,68 @@
 <template>
-  <div>
+  <div class="app">
     <header>
-      <h1>Web3钱包连接示列</h1>
-      <p>这是一个手动配置的Vue3 Web3应用</p>
+      <h1>简单钱包连接</h1>
+      <p>连接MetaMask，查看地址余额</p>
     </header>
     <main>
-      <WalletConnect />
+      <SimpleWallet />
     </main>
   </div>
 </template>
-<script setup>
-import WalletConnect  from './components/WalletConnect.vue';
+<script setup lang="ts">
+import SimpleWallet from './components/SimpleWallet.vue'
 </script>
 <style>
-#app {
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  max-width: 800px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+.app {
+  max-width: 600px;
   margin: 0 auto;
   padding: 20px;
-  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 header {
   text-align: center;
-  margin-bottom: 40px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #eaeaea;
+  padding: 40px 0;
+  color: white;
 }
 
-h1 {
-  color: #333;
+header h1 {
+  font-size: 32px;
   margin-bottom: 10px;
 }
 
+header p {
+  opacity: 0.9;
+  font-size: 16px;
+}
+
 main {
-  background: #f9f9f9;
+  flex: 1;
+  background: white;
+  border-radius: 20px;
   padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+footer {
+  text-align: center;
+  padding: 20px 0;
+  color: white;
+  opacity: 0.8;
+  font-size: 14px;
 }
 </style>
