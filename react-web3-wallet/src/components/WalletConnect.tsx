@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useAccount, useConnect, useDisconnect, useBalance } from 'wagmi'
 import { formatEther } from 'viem'
 
@@ -13,7 +13,7 @@ const WalletConnect: React.FC = () => {
 
   // 检测是否安装 MetaMask
   useEffect(() => {
-    setHasMetaMask(!!window.ethereum)
+    setHasMetaMask(!!(window as any).ethereum)
   }, [])
 
   // 格式化地址
