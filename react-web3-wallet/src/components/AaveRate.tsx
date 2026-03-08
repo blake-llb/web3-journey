@@ -1,9 +1,9 @@
 import { useReadContract, useChainId, useSwitchChain } from "wagmi";
 import { mainnet, sepolia } from "wagmi/chains";
 // // Ethereum 主网 Aave V3 Pool 地址
-const AAVE_POOL_ADDRESS_MAINNET = "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2";
+const AAVE_POOL_ADDRESS_MAINNET = "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2" as `0x${string}`;
 // Sepolia 测试网 Aave V3 Pool 地址
-const AAVE_POOL_ADDRESS_SEPOLIA = "0x6Ae43d3271ff6888e7Fc43Fd7321a503ff738951";
+const AAVE_POOL_ADDRESS_SEPOLIA = "0x6Ae43d3271ff6888e7Fc43Fd7321a503ff738951" as `0x${string}`;
 // 根据网络选择合约地址
 const AAVE_POOL_ABI = [
   {
@@ -111,10 +111,10 @@ const AAVE_POOL_ABI = [
   },
 ] as const;
 // 主网 WETH 地址
-const WETH_ADDRESS_MAINNET = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
+const WETH_ADDRESS_MAINNET = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2" as `0x${string}`;
 // Sepolia WETH 地址
-const WETH_ADDRESS_SEPOLIA = "0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14";
-// const ETH_ADDRESS = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
+const WETH_ADDRESS_SEPOLIA = "0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14" as `0x${string}`;
+// const ETH_ADDRESS = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE" as `0x${string}`;
 
 const AaveRate: React.FC = () => {
   // 获取当前连接的链 ID
@@ -122,13 +122,13 @@ const AaveRate: React.FC = () => {
   // 获取切换链的方法
   const { switchChain } = useSwitchChain();
 
-  interface config {
-    poolAddress: string;
-    assetAddress: string;
+  interface ContractConfig  {
+    poolAddress: `0x${string}`;
+    assetAddress: `0x${string}`;
     networkName: string;
   }
   // 根据当前网络动态选择合约地址和资产地址
-  const getContractConfig = () => {
+  const getContractConfig = (): ContractConfig => {
     if (chainId === mainnet.id) {
       return {
         poolAddress: AAVE_POOL_ADDRESS_MAINNET,
@@ -149,7 +149,7 @@ const AaveRate: React.FC = () => {
       networkName: '未知网络',
     };
   };
-  const config: config = getContractConfig();
+  const config: ContractConfig = getContractConfig();
 
   const { data, isLoading, isError, error } = useReadContract({
     address: config.poolAddress,
