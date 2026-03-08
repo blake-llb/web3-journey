@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useAccount, useConnect, useDisconnect, useBalance } from 'wagmi'
 import { formatEther } from 'viem'
+import AaveRate from './AaveRate'
 
 const WalletConnect: React.FC = () => {
   const { address, isConnected } = useAccount()
@@ -151,6 +152,9 @@ const WalletConnect: React.FC = () => {
             </button>
           </div>
         </div>
+
+        {/* aave存款利率 */}
+        <AaveRate />
         
         {/* 断开连接按钮 */}
         <button onClick={() => disconnect()} className="disconnect-button">

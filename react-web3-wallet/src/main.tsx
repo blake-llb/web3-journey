@@ -8,7 +8,15 @@ import App from './App.tsx'
 import './index.css'
 
 // 创建查询客户端
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      // 减少缓存时间，避免旧数据
+      staleTime: 5000,
+      gcTime: 10000,
+    },
+  },
+})
 
 // 创建 wagmi 配置
 const config = createConfig({
