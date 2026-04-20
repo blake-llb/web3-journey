@@ -258,3 +258,61 @@
 .disconnect-button:hover {
   background: #dc2626;
 }
+
+/* 面板布局 */
+.app-container {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  align-items: flex-start;
+  margin-top: 20px;
+}
+
+.left-panel {
+  flex: 0 0 auto;
+  min-width: 350px;
+}
+
+.right-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 450px;
+  min-width: 350px;
+}
+
+/* 面板通用样式 */
+.panel {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.panel-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 16px 20px;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.panel-content {
+  padding: 20px;
+}
+
+/* 响应式布局 */
+@media (max-width: 900px) {
+  .app-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .left-panel,
+  .right-panel {
+    width: 100%;
+    max-width: 450px;
+    min-width: unset;
+  }
+}

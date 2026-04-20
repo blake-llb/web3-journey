@@ -114,7 +114,6 @@ const AAVE_POOL_ABI = [
 const WETH_ADDRESS_MAINNET = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2" as `0x${string}`;
 // Sepolia WETH 地址
 const WETH_ADDRESS_SEPOLIA = "0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14" as `0x${string}`;
-// const ETH_ADDRESS = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE" as `0x${string}`;
 
 const AaveRate: React.FC = () => {
   // 获取当前连接的链 ID
@@ -122,7 +121,7 @@ const AaveRate: React.FC = () => {
   // 获取切换链的方法
   const { switchChain } = useSwitchChain();
 
-  interface ContractConfig  {
+  interface ContractConfig {
     poolAddress: `0x${string}`;
     assetAddress: `0x${string}`;
     networkName: string;
@@ -159,12 +158,6 @@ const AaveRate: React.FC = () => {
     chainId,
   });
 
-  // 调试信息
-  console.log('当前链 ID:', chainId);
-  console.log('合约地址:', config.poolAddress);
-  console.log('资产地址:', config.assetAddress);
-  console.log('合约调用数据:', data);
-  
   // 安全转换 BigInt 到 Number，避免精度丢失
   const safeBigIntToNumber = (value: bigint | number | undefined): number => {
     if (value === undefined || value === null) return 0;
@@ -178,7 +171,7 @@ const AaveRate: React.FC = () => {
   // 计算利率
   const getRateDisplay = () => {
     if (isLoading) return '加载中...';
-    if (isError) return `错误：${error?.message}`;
+    if (isError) return '出错了';
     if (!data) return '无数据';
 
     const reserveData = Array.isArray(data) ? data[0] : data;
@@ -186,75 +179,65 @@ const AaveRate: React.FC = () => {
     const rate = (safeBigIntToNumber(liquidityRate) / 1e27) * 100;
     return `${rate.toFixed(2)}%`;
   };
-  
+
+  // 处理错误点击，显示详细信息弹窗
+  const handleErrorClick = () => {
+    if (isError && error) {
+      alert(`错误详情：\n\n${error.message}\n\n错误名称：${error.name || 'Unknown Error'}`);
+    }
+  };
+
   return (
-    <div style={{ 
-      padding: '20px', 
-      border: '1px solid #ddd', 
-      borderRadius: '8px',
-      maxWidth: '400px',
-      margin: '20px auto'
-    }}>
-      <h3 style={{ margin: '0 0 15px 0' }}>Aave ETH 存款利率</h3>
-      
-      {/* 当前网络信息 */}
-      <div style={{ 
-        marginBottom: '15px', 
-        padding: '10px', 
-        background: '#f5f5f5',
-        borderRadius: '4px'
-      }}>
-        <p style={{ margin: '0 0 5px 0', fontSize: '14px', color: '#666' }}>
-          当前网络：{config.networkName} (ID: {chainId})
-        </p>
-      </div>
+    <div className="wallet-container">
+      <div className="info-card">
+        <div className="info-header">
+          <span className="info-icon">📊</span>
+          <h3>Aave ETH 存款利率</h3>
+        </div>
 
-      {/* 利率显示 */}
-      <div style={{ 
-        fontSize: '24px', 
-        fontWeight: 'bold',
-        color: isError ? '#f00' : '#3b82f6',
-        marginBottom: '15px'
-      }}>
-        {getRateDisplay()}
-      </div>
+        {/* 当前网络信息 */}
+        <div className="info-content">
+          <span style={{ color: '#666', fontSize: '14px' }}>当前网络：</span>
+          <span style={{ fontWeight: 600 }}>{config.networkName}</span>
+        </div>
 
-      {/* 网络切换按钮 */}
-      <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
-        {chainId !== mainnet.id && (
-          <button 
-            onClick={() => switchChain({ chainId: mainnet.id })}
-            style={{ 
-              padding: '8px 16px', 
-              background: chainId === mainnet.id ? '#ccc' : '#3b82f6', 
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: chainId === mainnet.id ? 'not-allowed' : 'pointer',
-              opacity: chainId === mainnet.id ? 0.6 : 1
-            }}
-            disabled={chainId === mainnet.id}
-          >
-            切换到主网
-          </button>
-        )}
-        {chainId !== sepolia.id && (
-          <button 
-            onClick={() => switchChain({ chainId: sepolia.id })}
-            style={{ 
-              padding: '8px 16px', 
-              background: chainId === sepolia.id ? '#ccc' : '#10b981', 
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: chainId === sepolia.id ? 'not-allowed' : 'pointer',
-              opacity: chainId === sepolia.id ? 0.6 : 1
-            }}
-            disabled={chainId === sepolia.id}
-          >
-            切换到测试网
-          </button>
-        )}
+        {/* 利率显示 */}
+        <div 
+          onClick={handleErrorClick}
+          style={{ 
+            fontSize: '32px', 
+            fontWeight: 'bold',
+            color: isError ? '#f00' : '#10b981',
+            textAlign: 'center',
+            padding: '20px 0',
+            cursor: isError ? 'pointer' : 'default',
+            textDecoration: isError ? 'underline' : 'none'
+          }}
+        >
+          {getRateDisplay()}
+        </div>
+
+        {/* 网络切换按钮 */}
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
+          {chainId !== mainnet.id && (
+            <button 
+              onClick={() => switchChain({ chainId: mainnet.id })}
+              className="connect-button"
+              style={{ maxWidth: '140px', fontSize: '14px', padding: '10px 16px' }}
+            >
+              切换到主网
+            </button>
+          )}
+          {chainId !== sepolia.id && (
+            <button 
+              onClick={() => switchChain({ chainId: sepolia.id })}
+              className="connect-button"
+              style={{ maxWidth: '140px', fontSize: '14px', padding: '10px 16px', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}
+            >
+              切换到测试网
+            </button>
+          )}
+        </div>
       </div>
     </div>
   )
