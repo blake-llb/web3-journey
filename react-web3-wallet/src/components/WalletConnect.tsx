@@ -91,11 +91,6 @@ const WalletConnect: React.FC = () => {
   return (
     <div className="wallet-container">
       <div className="connected-section">
-        <div className="success-header">
-          <div className="success-icon">✅</div>
-          <h2>钱包已连接</h2>
-        </div>
-        
         {/* 地址信息 */}
         <div className="info-card">
           <div className="info-header">
