@@ -1,6 +1,6 @@
 import WalletConnect from './components/WalletConnect'
 import AaveRate from './components/AaveRate'
-import DepositComponent from './components/DepositComponent'
+import NewDeposit from './components/NewDeposit'
 import './App.css'
 
 function App() {
@@ -10,7 +10,7 @@ function App() {
         <div className="main-panel">
           <WalletConnect />
           <AaveRate />
-          <DepositComponent />
+          <NewDeposit />
         </div>
       </div>
     </div>

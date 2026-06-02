@@ -90,13 +90,6 @@ export default function AaveV3Deposit() {
    const [aaveBalance, setAaveBalance] = useState<bigint>(0n);
 
   // ================ Hook 调用 ================
-  const { data: user1AccountData } = useReadContract({
-    address: AAVE_V3_POOL_ADDRESS,
-    abi: PoolArtifact.abi,
-    functionName: 'getUserAccountData',
-    args: [address],
-  })
-  console.log("用户账户数据:", user1AccountData);
   // 1. 获取用户Aave存款余额 (针对当前选中的代币)
   // const { data: reserveData, refetch: refetchReserveData, error: reserveError } = useReadContract({
   //   address: AAVE_V3_POOL_ADDRESS,
@@ -180,9 +173,8 @@ const aTokenAddress = reserveData?.[8]; // aTokenAddress是第9个元素（索�
 const { 
   data: aTokenBalance,
   refetch: refetchATokenBalance,
-  isLoading: isLoadingATokenBalance
 } = useReadContract({
-  address: "0x29598b72eb5CeBd806C5dCD549490FdA35B13cD8",
+  address: aTokenAddress as `0x${string}` | undefined,
   abi: erc20Abi,
   functionName: 'balanceOf',
   args: address ? [address] : undefined,
@@ -240,7 +232,7 @@ useEffect(() => {
     isSuccess: isConfirmed,
     data: receipt,
   } = useWaitForTransactionReceipt({
-    hash: transaction.txHash,
+    hash: transaction.txHash ?? undefined,
   });
 
   // ================ 计算属性 ================
@@ -261,13 +253,11 @@ useEffect(() => {
 
   // 格式化代币余额
   const formattedTokenBalance = tokenBalanceRaw
-    ? formatUnits(tokenBalanceRaw)
+    ? formatUnits(tokenBalanceRaw, selectedToken.decimals)
     : "0";
     
   // 格式化 Aave 存款余额
-  const formattedAaveBalance = aaveBalance !== null
-    ? formatUnits(aaveBalance)
-    : "0";
+  const formattedAaveBalance = formatUnits(aaveBalance, selectedToken.decimals);
 
   const formattedAllowance = userAllowance
     ? formatUnits(userAllowance, selectedToken.decimals)
@@ -341,10 +331,11 @@ useEffect(() => {
     return currentGasConfig;
   }, [chainId, currentGasConfig]);
 
-  const formatError = (error: any): string => {
+  const formatError = (error: unknown): string => {
     if (!error) return "未知错误";
     
-    const message = error.message || error.toString();
+    const err = error as { message?: string };
+    const message = err.message || String(error);
     
     if (message.includes("gas limit too high")) {
       return "Gas 限制过高，请尝试减少存款金额";
@@ -446,8 +437,8 @@ useEffect(() => {
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleWithdraw = async () => {
-    // 实现取款逻辑
     console.log("取款功能待实现");
   };
 
