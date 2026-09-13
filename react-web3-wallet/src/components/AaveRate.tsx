@@ -1,246 +1,80 @@
-import { useReadContract, useChainId, useSwitchChain } from "wagmi";
-import { mainnet, sepolia } from "wagmi/chains";
-// // Ethereum 主网 Aave V3 Pool 地址
-const AAVE_POOL_ADDRESS_MAINNET = "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2" as `0x${string}`;
-// Sepolia 测试网 Aave V3 Pool 地址
-const AAVE_POOL_ADDRESS_SEPOLIA = "0x6Ae43d3271ff6888e7Fc43Fd7321a503ff738951" as `0x${string}`;
-// 根据网络选择合约地址
-const AAVE_POOL_ABI = [
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "asset",
-        type: "address",
-      },
-    ],
-    name: "getReserveData",
-    outputs: [
-      {
-        components: [
-          {
-            components: [
-              {
-                internalType: "uint256",
-                name: "data",
-                type: "uint256",
-              },
-            ],
-            internalType: "struct DataTypes.ReserveConfigurationMap",
-            name: "configuration",
-            type: "tuple",
-          },
-          {
-            internalType: "uint128",
-            name: "liquidityIndex",
-            type: "uint128",
-          },
-          {
-            internalType: "uint128",
-            name: "currentLiquidityRate",
-            type: "uint128",
-          },
-          {
-            internalType: "uint128",
-            name: "variableBorrowIndex",
-            type: "uint128",
-          },
-          {
-            internalType: "uint128",
-            name: "currentVariableBorrowRate",
-            type: "uint128",
-          },
-          {
-            internalType: "uint128",
-            name: "currentStableBorrowRate",
-            type: "uint128",
-          },
-          {
-            internalType: "uint40",
-            name: "lastUpdateTimestamp",
-            type: "uint40",
-          },
-          {
-            internalType: "uint16",
-            name: "id",
-            type: "uint16",
-          },
-          {
-            internalType: "address",
-            name: "aTokenAddress",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "stableDebtTokenAddress",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "variableDebtTokenAddress",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "interestRateStrategyAddress",
-            type: "address",
-          },
-          {
-            internalType: "uint128",
-            name: "accruedToTreasury",
-            type: "uint128",
-          },
-          {
-            internalType: "uint128",
-            name: "unbacked",
-            type: "uint128",
-          },
-          {
-            internalType: "uint128",
-            name: "isolationModeTotalDebt",
-            type: "uint128",
-          },
-        ],
-        internalType: "struct DataTypes.ReserveData",
-        name: "",
-        type: "tuple",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-] as const;
-// 主网 WETH 地址
-const WETH_ADDRESS_MAINNET = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2" as `0x${string}`;
-// Sepolia WETH 地址
-const WETH_ADDRESS_SEPOLIA = "0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14" as `0x${string}`;
+import React from 'react'
+import { useReadContract, useChainId } from 'wagmi'
+import { AAVE_POOL_ABI } from '../abis/aavePool'
+import { getAavePoolAddress } from '../config/aave'
+import { getTokenAddress, TOKENS } from '../config/tokens'
+import { getChainName } from '../config/chains'
 
+/**
+ * AaveRate：纯展示组件（无外层卡片）
+ * 只负责读取并展示 Aave V3 池子中 WETH 的实时存款利率
+ * 现在作为内嵌区块，由 App 的左侧组合卡片提供外层容器
+ * 网络切换、存款、取款这些"操作"全部在 OperationPanel
+ */
 const AaveRate: React.FC = () => {
-  // 获取当前连接的链 ID
-  const chainId = useChainId();
-  // 获取切换链的方法
-  const { switchChain } = useSwitchChain();
+  const chainId = useChainId()
 
-  interface ContractConfig {
-    poolAddress: `0x${string}`;
-    assetAddress: `0x${string}`;
-    networkName: string;
-  }
   // 根据当前网络动态选择合约地址和资产地址
-  const getContractConfig = (): ContractConfig => {
-    if (chainId === mainnet.id) {
-      return {
-        poolAddress: AAVE_POOL_ADDRESS_MAINNET,
-        assetAddress: WETH_ADDRESS_MAINNET,
-        networkName: 'Ethereum 主网',
-      };
-    } else if (chainId === sepolia.id) {
-      return {
-        poolAddress: AAVE_POOL_ADDRESS_SEPOLIA,
-        assetAddress: WETH_ADDRESS_SEPOLIA,
-        networkName: 'Sepolia 测试网',
-      };
-    }
-    // 默认返回主网配置（但调用会失败）
-    return {
-      poolAddress: AAVE_POOL_ADDRESS_MAINNET,
-      assetAddress: WETH_ADDRESS_MAINNET,
-      networkName: '未知网络',
-    };
-  };
-  const config: ContractConfig = getContractConfig();
+  const poolAddress = getAavePoolAddress(chainId)
+  const wethAddress = getTokenAddress('WETH', chainId)
 
   const { data, isLoading, isError, error } = useReadContract({
-    address: config.poolAddress,
+    address: poolAddress,
     abi: AAVE_POOL_ABI,
-    functionName: "getReserveData",
-    args: [config.assetAddress],
+    functionName: 'getReserveData',
+    args: wethAddress ? [wethAddress] : undefined,
     chainId,
-  });
+  })
 
   // 安全转换 BigInt 到 Number，避免精度丢失
   const safeBigIntToNumber = (value: bigint | number | undefined): number => {
-    if (value === undefined || value === null) return 0;
+    if (value === undefined || value === null) return 0
     try {
-      return typeof value === 'bigint' ? Number(value) : Number(value);
+      return typeof value === 'bigint' ? Number(value) : Number(value)
     } catch {
-      return 0;
+      return 0
     }
-  };
+  }
 
   // 计算利率
   const getRateDisplay = () => {
-    if (isLoading) return '加载中...';
-    if (isError) return '出错了';
-    if (!data) return '无数据';
+    if (isLoading) return '加载中...'
+    if (isError) return '出错了'
+    if (!data) return '无数据'
 
-    const reserveData = Array.isArray(data) ? data[0] : data;
-    const liquidityRate = reserveData?.currentLiquidityRate;
-    const rate = (safeBigIntToNumber(liquidityRate) / 1e27) * 100;
-    return `${rate.toFixed(2)}%`;
-  };
+    const reserveData = Array.isArray(data) ? data[0] : data
+    const liquidityRate = reserveData?.currentLiquidityRate
+    const rate = (safeBigIntToNumber(liquidityRate) / 1e27) * 100
+    return `${rate.toFixed(2)}%`
+  }
 
   // 处理错误点击，显示详细信息弹窗
   const handleErrorClick = () => {
     if (isError && error) {
-      alert(`错误详情：\n\n${error.message}\n\n错误名称：${error.name || 'Unknown Error'}`);
+      alert(`错误详情：\n\n${error.message}\n\n错误名称：${error.name || 'Unknown Error'}`)
     }
-  };
+  }
 
   return (
-    <div className="wallet-container">
-      <div className="info-card">
-        <div className="info-header">
-          <span className="info-icon">📊</span>
-          <h3>Aave ETH 存款利率</h3>
-        </div>
-
-        {/* 当前网络信息 */}
-        <div className="info-content">
-          <span style={{ color: '#666', fontSize: '14px' }}>当前网络：</span>
-          <span style={{ fontWeight: 600 }}>{config.networkName}</span>
-        </div>
-
-        {/* 利率显示 */}
-        <div 
-          onClick={handleErrorClick}
-          style={{ 
-            fontSize: '32px', 
-            fontWeight: 'bold',
-            color: isError ? '#f00' : '#10b981',
-            textAlign: 'center',
-            padding: '20px 0',
-            cursor: isError ? 'pointer' : 'default',
-            textDecoration: isError ? 'underline' : 'none'
-          }}
-        >
-          {getRateDisplay()}
-        </div>
-
-        {/* 网络切换按钮 */}
-        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
-          {chainId !== mainnet.id && (
-            <button 
-              onClick={() => switchChain({ chainId: mainnet.id })}
-              className="connect-button"
-              style={{ maxWidth: '140px', fontSize: '14px', padding: '10px 16px' }}
-            >
-              切换到主网
-            </button>
-          )}
-          {chainId !== sepolia.id && (
-            <button 
-              onClick={() => switchChain({ chainId: sepolia.id })}
-              className="connect-button"
-              style={{ maxWidth: '140px', fontSize: '14px', padding: '10px 16px', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}
-            >
-              切换到测试网
-            </button>
-          )}
-        </div>
-      </div>
+    <div className="info-row rate-row">
+      <span className="row-icon">📊</span>
+      <span className="row-label">
+        Aave {TOKENS.WETH.symbol} 存款利率
+        <small className="row-sublabel">{getChainName(chainId)}</small>
+      </span>
+      <span
+        className="row-value rate-value"
+        onClick={handleErrorClick}
+        style={{
+          color: isError ? '#f00' : '#10b981',
+          cursor: isError ? 'pointer' : 'default',
+          textDecoration: isError ? 'underline' : 'none',
+        }}
+      >
+        {getRateDisplay()}
+      </span>
     </div>
   )
-};
+}
 
-export default AaveRate;
+export default AaveRate

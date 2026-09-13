@@ -1,87 +1,200 @@
+/* ===== 根容器 ===== */
 .app {
-  text-align: center;
+  min-height: 100vh;
   padding: 20px;
+  box-sizing: border-box;
 }
 
 .app h1 {
   margin-bottom: 30px;
   font-size: 2.5rem;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  color: white;
 }
 
-/* 主容器 - 居中布局 */
+/* ===== 主容器 ===== */
 .app-container {
   display: flex;
   justify-content: center;
   padding: 20px 0;
 }
 
-/* 大面板样式 - 包含所有组件 */
+/* ===== 主面板：两列布局（左宽 + 右窄）===== */
 .main-panel {
   width: 100%;
-  max-width: 1200px;
+  max-width: 960px;
   background: rgba(255, 255, 255, 0.95);
   border-radius: 20px;
-  padding: 30px;
+  padding: 24px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   color: #333;
   box-sizing: border-box;
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
+  display: grid;
+  /* 左侧组合面板（钱包 + Aave 利率）flex 占据剩余空间，
+     右侧操作面板固定 300px 容纳网络/操作/断开 */
+  grid-template-columns: 1fr 300px;
+  gap: 16px;
+  align-items: start;
 }
 
-/* 钱包连接容器样式 */
-.wallet-container {
-  flex: 0 0 30%;
+/* ===== 左侧组合面板（钱包 + Aave 利率，扁平行展示）===== */
+.wallet-card {
   background: #f8f9fa;
   border-radius: 16px;
-  padding: 24px;
+  padding: 8px 24px;
   box-sizing: border-box;
+  min-width: 0; /* 配合 grid 防止溢出 */
 }
 
-/* 连接区块样式 */
+/* ===== 钱包信息容器：扁平行布局 ===== */
+.wallet-info {
+  display: flex;
+  flex-direction: column;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== 单行信息行（地址/余额/利率共用）===== */
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 0;
+}
+
+.info-row:not(:last-child) {
+  border-bottom: 1px solid #e9ecef;
+}
+
+.row-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.row-label {
+  flex: 0 0 auto;
+  min-width: 90px;
+  font-size: 14px;
+  color: #6b7280;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.4;
+}
+
+.row-sublabel {
+  font-size: 11px;
+  color: #adb5bd;
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.row-value {
+  flex: 1;
+  text-align: right;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  font-family: inherit;
+}
+
+.address-text {
+  font-family: 'Courier New', monospace;
+  font-size: 15px;
+  background: white;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  display: inline-block;
+}
+
+.rate-row .row-value {
+  font-size: 22px;
+  color: #10b981;
+}
+
+.action-button {
+  background: #6c757d;
+  color: white;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.action-button:hover {
+  background: #545b62;
+}
+
+.action-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.currency {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.loading-balance {
+  font-size: 14px;
+  color: #6b7280;
+  font-style: italic;
+}
+
+/* ===== 未连接：连接入口区块 ===== */
 .connect-section {
   text-align: center;
-  padding: 20px 0;
+  padding: 40px 16px;
 }
 
 .connect-icon {
-  font-size: 80px;
-  margin-bottom: 20px;
+  font-size: 60px;
+  margin-bottom: 16px;
   opacity: 0.8;
 }
 
 .connect-section h2 {
   color: #333;
-  margin-bottom: 10px;
-  font-size: 24px;
+  margin-bottom: 8px;
+  font-size: 20px;
 }
 
 .connect-section p {
   color: #666;
-  margin-bottom: 30px;
-  font-size: 16px;
+  margin-bottom: 20px;
+  font-size: 14px;
 }
 
 .connect-button {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
-  padding: 15px 40px;
-  border-radius: 12px;
-  font-size: 18px;
+  padding: 12px 32px;
+  border-radius: 10px;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  margin: 20px 0;
   transition: all 0.3s ease;
   width: 100%;
-  max-width: 300px;
+  max-width: 280px;
 }
 
 .connect-button:hover:not(:disabled) {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
 }
 
 .connect-button:disabled {
@@ -92,34 +205,36 @@
 .error-message {
   background: #ffebee;
   color: #c62828;
-  padding: 12px 20px;
+  padding: 10px 16px;
   border-radius: 8px;
-  margin: 20px 0;
-  font-size: 14px;
+  margin: 16px 0;
+  font-size: 13px;
   border-left: 4px solid #c62828;
 }
 
 .install-guide {
   background: #e3f2fd;
-  padding: 20px;
+  padding: 16px;
   border-radius: 12px;
-  margin-top: 30px;
+  margin-top: 20px;
 }
 
 .install-guide p {
   color: #1976d2;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   font-weight: 500;
+  font-size: 14px;
 }
 
 .install-button {
   display: inline-block;
   background: #1976d2;
   color: white;
-  padding: 10px 20px;
+  padding: 8px 16px;
   border-radius: 8px;
   text-decoration: none;
   font-weight: 500;
+  font-size: 14px;
   transition: background 0.3s;
 }
 
@@ -127,169 +242,20 @@
   background: #1565c0;
 }
 
-/* 已连接状态样式 */
-.connected-section {
-  animation: fadeIn 0.5s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.success-header {
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-.success-icon {
-  font-size: 60px;
-  margin-bottom: 10px;
-}
-
-.success-header h2 {
-  color: #2e7d32;
-  font-size: 24px;
-}
-
-.info-card {
-  background: #f8f9fa;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 20px;
-  border: 1px solid #e9ecef;
-}
-
-.info-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 15px;
-}
-
-.info-icon {
-  font-size: 20px;
-}
-
-.info-header h3 {
-  color: #495057;
-  font-size: 18px;
-  margin: 0;
-}
-
-.info-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.address {
-  font-family: 'Courier New', monospace;
-  font-size: 20px;
-  font-weight: 600;
-  color: #333;
-  background: white;
-  padding: 10px 15px;
-  border-radius: 8px;
-  flex: 1;
-  margin-right: 10px;
-  word-break: break-all;
-}
-
-.action-button {
-  background: #6c757d;
-  color: white;
-  border: none;
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background 0.3s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.action-button:hover {
-  background: #545b62;
-}
-
-.full-address {
-  font-family: 'Courier New', monospace;
-  font-size: 12px;
-  color: #868e96;
-  word-break: break-all;
-  margin-top: 10px;
-  background: white;
-  padding: 10px;
-  border-radius: 6px;
-  text-align: center;
-}
-
-.toggle-button {
-  background: transparent;
-  color: #6c757d;
-  border: none;
-  font-size: 12px;
-  cursor: pointer;
-  margin-top: 8px;
-  text-decoration: underline;
-}
-
-.balance-display {
-  display: flex;
-  align-items: baseline;
-  flex: 1;
-}
-
-.balance {
-  font-size: 32px;
-  font-weight: 700;
-  color: #10b981;
-  margin-right: 10px;
-}
-
-.currency {
-  font-size: 20px;
-  color: #6b7280;
-}
-
-.loading-balance {
-  font-size: 18px;
-  color: #6b7280;
-  font-style: italic;
-  flex: 1;
-}
-
-.disconnect-button {
-  background: #ef4444;
-  color: white;
-  border: none;
-  padding: 16px;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  width: 100%;
-  margin-top: 20px;
-  transition: background 0.3s;
-}
-
-.disconnect-button:hover {
-  background: #dc2626;
-}
-
-/* 响应式布局 */
-@media (max-width: 1000px) {
+/* ===== 响应式：窄屏调整 ===== */
+@media (max-width: 800px) {
   .main-panel {
-    flex-direction: column;
-    max-width: 100%;
+    grid-template-columns: 1fr; /* 窄屏自动降级为单列垂直堆叠 */
+    max-width: 480px;
+    padding: 16px;
+    gap: 12px;
   }
-  
-  .wallet-container {
-    flex: none;
-    width: 100%;
+
+  .wallet-card {
+    padding: 8px 16px;
+  }
+
+  .app {
+    padding: 12px;
   }
 }
