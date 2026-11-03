@@ -42,9 +42,8 @@ const AaveRate: React.FC = () => {
     if (isError) return '出错了'
     if (!data) return '无数据'
 
-    const reserveData = Array.isArray(data) ? data[0] : data
-    const liquidityRate = reserveData?.currentLiquidityRate
-    const rate = (safeBigIntToNumber(liquidityRate) / 1e27) * 100
+    // ABI 已给顶层 tuple 命名，viem 这里返回带字段名的对象
+    const rate = (safeBigIntToNumber(data.currentLiquidityRate) / 1e27) * 100
     return `${rate.toFixed(2)}%`
   }
 

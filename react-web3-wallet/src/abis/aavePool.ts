@@ -40,10 +40,21 @@ export const AAVE_POOL_ABI = [
           { internalType: 'uint128', name: 'isolationModeTotalDebt', type: 'uint128' },
         ],
         internalType: 'struct DataTypes.ReserveData',
-        name: '',
+        // 必须给顶层 tuple 命名，否则 viem 会把返回值解码成数组（data[0] 是 configuration）
+        // 命名后返回对象，可以直接用 data.currentLiquidityRate / data.aTokenAddress
+        name: 'reserveData',
         type: 'tuple',
       },
     ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  // getReservesList() → address[] : 当前 Pool 列出的所有 reserve 资产
+  // 用于调试：确认 WETH 在 Sepolia Pool 里到底有没有被 list
+  {
+    inputs: [],
+    name: 'getReservesList',
+    outputs: [{ internalType: 'address[]', name: '', type: 'address[]' }],
     stateMutability: 'view',
     type: 'function',
   },
