@@ -27,15 +27,6 @@
   color: #495057;
 }
 
-.networkBadge {
-  background: #e7f5ff;
-  color: #1971c2;
-  padding: 3px 10px;
-  border-radius: 10px;
-  font-size: 11px;
-  font-weight: 500;
-}
-
 /* ===== 段落 ===== */
 .section {
   margin-bottom: 4px;
@@ -76,33 +67,11 @@
   cursor: not-allowed;
 }
 
-/* ===== 网络按钮组（横向排列）===== */
-.networkButtons {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.networkButtons .btn {
-  flex: 1;
-  min-width: 80px;
-}
-
 .note {
   color: #2b8a3e;
   font-size: 13px;
   font-weight: 500;
   padding: 8px 12px;
-}
-
-.errorMsg {
-  background: #ffe3e3;
-  color: #c92a2a;
-  padding: 8px 12px;
-  border-radius: 8px;
-  font-size: 12px;
-  margin: 8px 0;
-  border: 1px solid #ffa8a8;
 }
 
 /* ===== 分隔线 ===== */

@@ -1,6 +1,5 @@
-import { useChainId, useSwitchChain, useAccount, useDisconnect } from 'wagmi'
-import { mainnet, sepolia } from 'wagmi/chains'
-import { getChainName } from '../config/chains'
+import { useAccount, useDisconnect } from 'wagmi'
+import NetworkSwitcher from './NetworkSwitcher'
 import styles from './OperationPanel.module.css'
 
 interface OperationPanelProps {
@@ -18,16 +17,8 @@ interface OperationPanelProps {
  * 只需在 opButtons 数组里追加一项，UI 自动适配。
  */
 export default function OperationPanel({ onDeposit, onWithdraw }: OperationPanelProps) {
-  const chainId = useChainId()
   const { isConnected } = useAccount()
   const { disconnect } = useDisconnect()
-  const { switchChain, isPending, error } = useSwitchChain()
-
-  // 网络状态判断
-  const onSepolia = chainId === sepolia.id
-  const onMainnet = chainId === mainnet.id
-  const showSepoliaBtn = !onSepolia
-  const showMainnetBtn = !onMainnet
 
   /**
    * 后续要加新操作，在这里追加即可
@@ -44,38 +35,13 @@ export default function OperationPanel({ onDeposit, onWithdraw }: OperationPanel
       <div className={styles.header}>
         <span className={styles.icon}>⚙️</span>
         <h3>操作</h3>
-        <span className={styles.networkBadge}>{getChainName(chainId)}</span>
       </div>
 
-      {/* 网络切换 */}
+      {/* 网络：展示当前网络 + 下拉切换 */}
       <div className={styles.section}>
         <div className={styles.sectionLabel}>网络</div>
-        <div className={styles.networkButtons}>
-          {showSepoliaBtn && (
-            <button
-              className={styles.btn}
-              onClick={() => switchChain({ chainId: sepolia.id })}
-              disabled={isPending}
-            >
-              🧪 测试网
-            </button>
-          )}
-          {showMainnetBtn && (
-            <button
-              className={styles.btn}
-              onClick={() => switchChain({ chainId: mainnet.id })}
-              disabled={isPending}
-            >
-              🔷 主网
-            </button>
-          )}
-          {!showSepoliaBtn && !showMainnetBtn && (
-            <span className={styles.note}>✓ 已在目标网络</span>
-          )}
-        </div>
+        <NetworkSwitcher />
       </div>
-
-      {error && <div className={styles.errorMsg}>❌ {error.message}</div>}
 
       <div className={styles.divider} />
 
