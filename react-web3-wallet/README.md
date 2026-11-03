@@ -114,7 +114,7 @@ createConfig({
 })
 ```
 
-更多 wagmi 配置细节参考 [notes/2026-09-01.md](../notes/2026-09-01.md)。
+更多 wagmi 配置细节参考 [notes/2026-10-27.md](../notes/2026-10-27.md)。
 
 ### 合约地址速查
 
@@ -176,7 +176,7 @@ connectors: [
 
 | 问题 | 原因 / 解决方案 |
 |------|--------------|
-| 找不到 `deposit` 方法 | Aave **V3** 用 `supply()`，V2 才是 `deposit()`。见 [`notes/2026-08-29.md`](../notes/2026-08-29.md) |
+| 找不到 `deposit` 方法 | Aave **V3** 用 `supply()`，V2 才是 `deposit()`。见 [`notes/2026-10-26.md`](../notes/2026-10-26.md) |
 | 查询 ABI 没有 supply/deposit | Etherscan 默认显示的是 **代理合约**，要点 "Contract → Implementation" 查看实施合约的 ABI |
 | 交易失败但 ETH 没了 | gas limit 设太小导致 revert；不要手动设 gas，让钱包自动估算 |
 | 查询返回数组第一个元素是 BigInt | Aave 的 `getReserveData` 返回 tuple，`currentLiquidityRate` 在索引 3 |
