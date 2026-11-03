@@ -71,7 +71,6 @@ const WalletConnect: React.FC = () => {
             ❌ {error.message}
           </div>
         )}
-
         {!hasMetaMask && (
           <div className="install-guide">
             <p>未检测到 MetaMask，请先安装：</p>
