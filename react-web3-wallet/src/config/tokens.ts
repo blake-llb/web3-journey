@@ -23,7 +23,10 @@ export const TOKENS: Record<string, TokenConfig> = {
     decimals: 18,
     addresses: {
       [mainnet.id]: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
-      [sepolia.id]: '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14',
+      // 注意：Aave Sepolia 市场用的是 Aave 官方测试 WETH（可从 Aave faucet 领取），
+      // 不是 Sepolia 原生 WETH9(0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14)。
+      // 用错地址会让 getReserveData 返回全 0，且 supply/withdraw 无法工作。
+      [sepolia.id]: '0xC558DBdd856501FCd9aaF1E62eae57A9F0629a3c',
     },
   },
   // 后续可加：USDC、DAI 等
