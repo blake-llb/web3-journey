@@ -1,0 +1,136 @@
+/* ===== 容器（用于定位下拉菜单）===== */
+.root {
+  position: relative;
+}
+
+/* ===== 触发器：始终展示当前网络 ===== */
+.trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border: 1px solid #dee2e6;
+  background: white;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #495057;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+  box-sizing: border-box;
+}
+
+.trigger:hover:not(:disabled),
+.trigger[aria-expanded='true'] {
+  border-color: #339af0;
+  color: #1971c2;
+}
+
+.trigger:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.triggerIcon {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.triggerLabel {
+  flex: 1;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chevron {
+  font-size: 11px;
+  color: #adb5bd;
+  transition: transform 0.15s;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+/* ===== 下拉菜单 ===== */
+.menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 10px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+  z-index: 30;
+  animation: menuIn 0.12s ease;
+}
+
+@keyframes menuIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 10px;
+  border: none;
+  background: transparent;
+  border-radius: 7px;
+  font-size: 13px;
+  font-family: inherit;
+  color: #495057;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s, color 0.15s;
+  box-sizing: border-box;
+}
+
+.option:hover {
+  background: #f1f3f5;
+  color: #1971c2;
+}
+
+.optionActive,
+.optionActive:hover {
+  background: #e7f5ff;
+  color: #1971c2;
+  font-weight: 600;
+}
+
+.optionIcon {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.optionLabel {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.check {
+  font-size: 12px;
+}
+
+/* ===== 错误提示 ===== */
+.errorMsg {
+  background: #ffe3e3;
+  color: #c92a2a;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  margin-top: 8px;
+  border: 1px solid #ffa8a8;
+}
